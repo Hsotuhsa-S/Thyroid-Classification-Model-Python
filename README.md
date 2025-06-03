@@ -41,7 +41,7 @@ The entire project is modularized into three main Jupyter notebooks (scripts):
 
 ```mermaid
 graph TD
-    A[Raw Data] --> B[EDA & Cleanup]
+    A[Raw Data] --> B[Cleanup & EDA]
     B --> C[Feature Selection]
     C --> D[Model Comparison & Evaluation]
 ```
@@ -52,9 +52,9 @@ graph TD
 
 | Script                                      | Input File                          | Output File                               | Key Visuals/Outputs                  |
 |----------------------------------------------|-------------------------------------|-------------------------------------------|--------------------------------------|
-| `00_Thyroid-Classfication_cleanup_EDA.ipynb`   | `data/thyroidSourceData.csv`        | `cleanThyroidData.csv`                    | Data overview, missingness, boxplots |
-| `01_featureSelection_Regularization.ipynb`      | `cleanThyroidData.csv`              | `data/thyroidData_Lasso_featureselected.csv` | Feature importance barplot, LASSO plot |
-| `02_modelTuningSelectionEvaluation.ipynb`        | `data/thyroidData_Lasso_featureselected.csv` | N/A (metrics in notebook)            | ROC curves, boxplots, confusion mat. |
+| `00_Thyroid-Classfication_cleanup_EDA.ipynb`   | `data/thyroidSourceData.csv`        | `data/cleanThyroidData.csv`                    | Data overview, missingness, boxplots |
+| `01_featureSelection_Regularization.ipynb`      | `data/cleanThyroidData.csv`              | `data/thyroidData_Lasso_featureselected.csv` | Feature importance barplot, LASSO plot |
+| `02_modelTuningSelectionEvaluation.ipynb`        | `data/thyroidData_Lasso_featureselected.csv` and `data/cleanThyroidData.csv`  | `data/Thyroid_Random_Forest_pipeline.pkl`            | ROC curves, boxplots, confusion mat. |
 
 ---
 
@@ -75,6 +75,8 @@ graph TD
 > _Example: Bar chart of absolute LASSO coefficients for top features._
 
 ### **3. Model Training, Tuning, and Evaluation**
+- Random Forest model has implicit feature selection. 
+- Predictor selected for GLM, SVM and KNN model training and fitting are based on LASSO featire selection. 
 - Compare four classifiers: **GLM (Logistic Regression), SVM, Random Forest, KNN**.
 - Use **cross-validation** and **GridSearchCV** for hyperparameter tuning.
 - Evaluate metrics: **ROC-AUC** (primary, robust to class imbalance), **accuracy, precision, recall, F1**.
@@ -101,9 +103,32 @@ graph TD
 
 1. **Clone the repository** and ensure you have Python 3.8+ and requirements (see `requirements.txt`).
 2. **Run scripts sequentially:**  
-   a. EDA and cleanup  
-   b. Feature selection  
-   c. Model selection & evaluation  
+   a. EDA and cleanup
+   b. Feature selection 
+   c. Model selection & evaluation 
+3. **Exporting the Trained Model:** 
+After running the full notebook, the trained and tuned Random Forest pipeline (including all preprocessing) is automatically saved to:
+```
+data/Thyroid_Random_Forest_pipeline.pkl
+```
+4. **Making Predictions with the Saved Model:**
+You can load and use the trained Random Forest pipeline for inference as follows:
+
+```python
+import joblib
+import pandas as pd
+
+# Load trained model
+model = joblib.load("data/Thyroid_Random_Forest_pipeline.pkl")
+
+# Prepare your new data as a pandas DataFrame with the same columns as the training data
+# Example:
+# new_data = pd.DataFrame([{...}], columns=[...])
+
+# Get predictions
+predictions = model.predict(new_data)
+probabilities = model.predict_proba(new_data)
+```
 
 ---
 
