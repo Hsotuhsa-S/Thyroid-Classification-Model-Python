@@ -1,5 +1,9 @@
 # Thyroid Disease Classification Models in Python
 
+## From R to Python: Project History
+
+This repository evolved from an earlier [thyroid classification project](https://github.com/Hsotuhsa-S/Thyroid-Classification-Models) created for a Heidelberg University medical data science course. While the original used R and explored three classification models, this Python implementation adds KNN modeling, enhances modularity, and prepares the model for deployment in end-to-end ML workflows.
+
 ## Project Overview
 
 This project evaluates and compares multiple classification algorithms (GLM/Logistic Regression, SVM, Random Forest, KNN) for predicting thyroid disease using clinical and laboratory data. The analysis is framed both from a data science and medical perspective, 
